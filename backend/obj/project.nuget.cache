@@ -1,0 +1,48 @@
+{
+  "version": 2,
+  "dgSpecHash": "5e70vM+yUsmnRFgwCpsizMkhMiCG2v0cF9kbVanurNw7NobPtZj+/kVuSNfua1X/To6YxZCoCiHD1OjHOJoP9g==",
+  "success": true,
+  "projectFilePath": "/home/sakethm/Desktop/sample_dotnet/ecommerce/backend/backend.csproj",
+  "expectedPackageFiles": [
+    "/home/sakethm/.nuget/packages/dnsclient/1.6.1/dnsclient.1.6.1.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/microsoft.aspnetcore.jsonpatch/8.0.4/microsoft.aspnetcore.jsonpatch.8.0.4.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/microsoft.aspnetcore.mvc.newtonsoftjson/8.0.4/microsoft.aspnetcore.mvc.newtonsoftjson.8.0.4.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/microsoft.aspnetcore.openapi/8.0.15/microsoft.aspnetcore.openapi.8.0.15.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/microsoft.csharp/4.7.0/microsoft.csharp.4.7.0.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/microsoft.extensions.logging.abstractions/2.0.0/microsoft.extensions.logging.abstractions.2.0.0.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/microsoft.netcore.platforms/5.0.0/microsoft.netcore.platforms.5.0.0.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/microsoft.openapi/1.6.14/microsoft.openapi.1.6.14.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/microsoft.win32.registry/5.0.0/microsoft.win32.registry.5.0.0.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/mongodb.bson/3.4.0/mongodb.bson.3.4.0.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/mongodb.driver/3.4.0/mongodb.driver.3.4.0.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/newtonsoft.json.bson/1.0.2/newtonsoft.json.bson.1.0.2.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/portable.bouncycastle/1.9.0/portable.bouncycastle.1.9.0.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/razorpay/3.1.4/razorpay.3.1.4.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/sharpcompress/0.30.1/sharpcompress.0.30.1.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/snappier/1.0.0/snappier.1.0.0.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/swashbuckle.aspnetcore/6.6.2/swashbuckle.aspnetcore.6.6.2.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/swashbuckle.aspnetcore.swagger/6.6.2/swashbuckle.aspnetcore.swagger.6.6.2.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.6.2/swashbuckle.aspnetcore.swaggergen.6.6.2.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.6.2/swashbuckle.aspnetcore.swaggerui.6.6.2.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/system.buffers/4.5.1/system.buffers.4.5.1.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/system.memory/4.5.5/system.memory.4.5.5.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/system.runtime.compilerservices.unsafe/5.0.0/system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/system.security.accesscontrol/5.0.0/system.security.accesscontrol.5.0.0.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/system.security.principal.windows/5.0.0/system.security.principal.windows.5.0.0.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/zstdsharp.port/0.7.3/zstdsharp.port.0.7.3.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Razorpay 3.1.4' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "libraryId": "Razorpay",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
+}

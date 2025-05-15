@@ -43,6 +43,24 @@ var user = await _users.Find(filter).FirstOrDefaultAsync();
         return null;
     }
 }
+
+public async Task<User> CreateUserAsync(User user)
+{
+    if (string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.PasswordHash))
+        throw new Exception("Email and password are required");
+
+    var existingUser = await _users.Find(u => u.Email == user.Email).FirstOrDefaultAsync();
+    if (existingUser != null)
+        throw new Exception("User with this email already exists");
+
+    user.Id = ObjectId.GenerateNewId().ToString();
+    user.Orders = new List<OrderSummary>();
+    user.Cart = new List<CartItem>();
+
+    await _users.InsertOneAsync(user);
+    return user;
+}
+
     
 
     public async Task AddToCartAsync(string userId, string productId, int quantity)

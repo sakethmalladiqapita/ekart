@@ -35,6 +35,9 @@ const ProductListPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [quantities, setQuantities] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+const productsPerPage = 8;
+
 
   useEffect(() => {
     axios.get('/api/products')
@@ -44,27 +47,16 @@ const ProductListPage = () => {
         const initialQuantities = {};
         data.forEach(p => initialQuantities[p.id] = 1);
         setQuantities(initialQuantities);
+        setCurrentPage(1);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
   
 
-  const handleBuyNow = async (productId) => {
-    if (!user) return navigate('/login');
-    try {
-      const quantity = quantities[productId] || 1;
-      const response = await axios.post('/api/orders/buy-now', {
-        userId: user.id,
-        productId,
-        quantity
-      });
-      const order = response.data;
-      navigate('/checkout', { state: { order } });
-    } catch (err) {
-      console.error(err);
-      alert('Failed to create order.');
-    }
+  const handleBuyNow = (productId) => {
+    const quantity = quantities[productId] || 1;
+    navigate('/checkout', { state: { productId, quantity, type: 'buynow' } });
   };
   
   
@@ -91,6 +83,13 @@ const ProductListPage = () => {
       return { ...prev, [productId]: newQty };
     });
   };
+
+  const indexOfLastProduct = currentPage * productsPerPage;
+const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+
+const totalPages = Math.ceil(products.length / productsPerPage);
+
   
    return (
     <>
@@ -121,7 +120,7 @@ const ProductListPage = () => {
           gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
           gap: '24px'
         }}>
-          {products.map(product => (
+          {currentProducts .map(product => (
             <div
               key={product.id}
               tabIndex={0}
@@ -216,6 +215,26 @@ const ProductListPage = () => {
             </div>
           ))}
         </div>
+        <div style={{ textAlign: 'center', marginTop: '30px' }}>
+  <button
+    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+    disabled={currentPage === 1}
+    style={paginationButton}
+  >
+    Previous
+  </button>
+  <span style={{ margin: '0 16px', fontWeight: '600' }}>
+    Page {currentPage} of {totalPages}
+  </span>
+  <button
+    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+    disabled={currentPage === totalPages}
+    style={paginationButton}
+  >
+    Next
+  </button>
+</div>
+
       </div>
       {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage(null)} />}
     </>
@@ -230,6 +249,16 @@ const qtyBtn = {
   borderRadius: '6px',
   backgroundColor: '#f3f4f6',
   cursor: 'pointer'
+};
+const paginationButton = {
+  padding: '8px 16px',
+  fontSize: '1rem',
+  fontWeight: '600',
+  border: '1px solid #ccc',
+  borderRadius: '8px',
+  backgroundColor: '#ffffff',
+  cursor: 'pointer',
+  margin: '0 8px'
 };
 
 export default ProductListPage;

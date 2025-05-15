@@ -4,4 +4,5 @@ public interface IUserService
     Task AddToCartAsync(string userId, string productId, int quantity);
     Task<List<CartItem>> GetCartAsync(string userId);
     Task<Order> CheckoutCartAsync(string userId);
+     Task<User> CreateUserAsync(User user);
 }

@@ -17,13 +17,53 @@ const CheckoutPage = () => {
   };
 
   const handlePayment = async () => {
+    const { cardNumber, name, expiry, cvv } = details;
+  
+    if (!cardNumber || !name || !expiry || !cvv) {
+      alert('Please fill in all payment details.');
+      return;
+    }
+  
+    if (!/^\d{16}$/.test(cardNumber)) {
+      alert('Card number must be exactly 16 digits.');
+      return;
+    }
+  
+    if (!/^\d{3,4}$/.test(cvv)) {
+      alert('CVV must be 3 or 4 digits.');
+      return;
+    }
+  
+    if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) {
+      alert('Expiry must be in MM/YY format.');
+      return;
+    }
+  
     setLoading(true);
     try {
+      let finalOrder = order;
+  
+      // ✅ If no order (Buy Now path), create it now
+      if (!finalOrder && location.state?.type === 'buynow') {
+        const res = await axios.post('/api/orders/buy-now', {
+          userId: user.id,
+          productId: location.state.productId,
+          quantity: location.state.quantity
+        });
+        finalOrder = res.data;
+      }
+  
+      if (!finalOrder) {
+        throw new Error('Order not available');
+      }
+  
+      // ✅ Then call payment API
       await axios.post('/api/payment/create', {
-        orderId: order.id,
-        amount: order.totalAmount
+        orderId: finalOrder.id,
+        amount: finalOrder.totalAmount
       });
-      navigate('/confirmation');
+  
+      navigate('/confirmation', { state: { orderId: finalOrder.id } });
     } catch (err) {
       console.error(err);
       alert('Payment processing failed.');
@@ -31,8 +71,17 @@ const CheckoutPage = () => {
       setLoading(false);
     }
   };
+  
+  
 
-  if (!order || !user) return <p style={{ textAlign: 'center', marginTop: '50px' }}>Invalid access. Please return to the cart.</p>;
+  if (!user) {
+    return <p style={{ textAlign: 'center', marginTop: '50px' }}>Please log in first.</p>;
+  }
+  
+  if (!order && !(location.state?.type === 'buynow' && location.state?.productId && location.state?.quantity)) {
+    return <p style={{ textAlign: 'center', marginTop: '50px' }}>Invalid access. Please return to the cart.</p>;
+  }
+  
 
   return (
     <div style={{
@@ -90,14 +139,39 @@ const CheckoutPage = () => {
           style={inputStyle}
         />
 
-        <button
-          type="button"
-          onClick={handlePayment}
-          style={buttonStyle}
-          disabled={loading}
-        >
-          {loading ? 'Processing...' : 'Pay Now'}
-        </button>
+<button
+  type="button"
+  onClick={handlePayment}
+  style={{
+    ...buttonStyle,
+    filter:
+      loading ||
+      !details.cardNumber ||
+      !details.name ||
+      !details.expiry ||
+      !details.cvv
+        ? 'opacity: 0.5'
+        : 'none',
+    cursor:
+      loading ||
+      !details.cardNumber ||
+      !details.name ||
+      !details.expiry ||
+      !details.cvv
+        ? 'not-allowed'
+        : 'pointer',
+  }}
+  disabled={
+    loading ||
+    !details.cardNumber ||
+    !details.name ||
+    !details.expiry ||
+    !details.cvv
+  }
+>
+  {loading ? 'Processing...' : 'Pay Now'}
+</button>
+
       </form>
     </div>
   );

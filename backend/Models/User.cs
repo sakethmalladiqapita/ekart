@@ -5,7 +5,7 @@ public class User
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [BsonElement("email")]
     public string Email { get; set; }
@@ -14,7 +14,7 @@ public class User
     public string PasswordHash { get; set; }
 
     [BsonElement("address")]
-    public Address Address { get; set; }
+    public Address? Address { get; set; }
 
     [BsonElement("orders")]
     public List<OrderSummary> Orders { get; set; } = new();

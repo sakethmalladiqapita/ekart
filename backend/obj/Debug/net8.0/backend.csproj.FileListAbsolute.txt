@@ -43,3 +43,4 @@
 /home/sakethm/Desktop/sample_dotnet/ecommerce/backend/obj/Debug/net8.0/backend.pdb
 /home/sakethm/Desktop/sample_dotnet/ecommerce/backend/obj/Debug/net8.0/backend.genruntimeconfig.cache
 /home/sakethm/Desktop/sample_dotnet/ecommerce/backend/obj/Debug/net8.0/ref/backend.dll
+/home/sakethm/Desktop/sample_dotnet/ecommerce/backend/obj/Debug/net8.0/backend.sourcelink.json

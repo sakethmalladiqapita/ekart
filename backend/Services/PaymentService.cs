@@ -37,37 +37,39 @@ public class PaymentService : IPaymentService
 
 public async Task ConfirmPaymentAsync(ConfirmPaymentRequest request)
 {
-    // Insert payment record
+    // 1. Record payment
     var payment = new Payment
     {
         Id = ObjectId.GenerateNewId().ToString(),
-        UserId = "",  // Replace with actual userId if available from order
+        UserId = "", // Optional: Load from order if needed
         OrderId = request.OrderId,
-        Amount = 0,  // You can update this if Razorpay sends actual amount
+        Amount = 0,  // Optional: can be set from Razorpay API if desired
         PaymentStatus = "Success",
         PaymentDate = DateTime.UtcNow
     };
     await _payments.InsertOneAsync(payment);
 
-    // Setup MongoDB connection to Orders and Deliveries
-    var client = new MongoClient("mongodb://localhost:27017"); // or use injected client
+    // 2. Connect to Mongo and collections
+    var client = new MongoClient("mongodb://localhost:27017"); // Or inject this
     var database = client.GetDatabase("ekartdatabase");
-
     var orders = database.GetCollection<Order>("OrdersData");
     var deliveries = database.GetCollection<Delivery>("DeliveriesData");
 
-    // 1. Update order status to "Done"
-    var updateOrder = Builders<Order>.Update.Set(o => o.Status, "Done");
-    await orders.UpdateOneAsync(o => o.Id == request.OrderId, updateOrder);
+    // 3. Update order status to "Successful"
+    var updateOrder = Builders<Order>.Update.Set(o => o.Status, "Successful");
+    var result = await orders.UpdateOneAsync(o => o.Id == request.OrderId, updateOrder);
 
-    // 2. Insert delivery record
-    var delivery = new Delivery
+    // 4. Create delivery record if order update succeeded
+    if (result.ModifiedCount > 0)
     {
-        OrderId = request.OrderId,
-        DeliveryStatus = "Processing",
-        ExpectedDate = DateTime.UtcNow.AddDays(3)
-    };
-    await deliveries.InsertOneAsync(delivery);
+        var delivery = new Delivery
+        {
+            OrderId = request.OrderId,
+            DeliveryStatus = "Processing",
+            ExpectedDate = DateTime.UtcNow.AddDays(3)
+        };
+        await deliveries.InsertOneAsync(delivery);
+    }
 }
 
 

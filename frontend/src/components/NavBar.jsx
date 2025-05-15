@@ -13,22 +13,40 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static">
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>eKart</Link>
+    <AppBar position="static" sx={{ backgroundColor: '#1f2937', boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)' }}>
+      <Toolbar sx={{ justifyContent: 'space-between', px: 3 }}>
+        {/* Brand */}
+        <Typography
+          variant="h6"
+          component={Link}
+          to="/"
+          sx={{
+            color: '#d1d5db',
+            textDecoration: 'none',
+            fontWeight: 700,
+            letterSpacing: '1px'
+          }}
+        >
+          eKart
         </Typography>
-        <Box>
+
+        {/* Navigation Links */}
+        <Box sx={{ display: 'flex', gap: 2 }}>
           {user ? (
             <>
-              <Button color="inherit" component={Link} to="/cart">Cart</Button>
-              <Button color="inherit" component={Link} to="/orders">Orders</Button>
-              <Button color="inherit" onClick={handleLogout}>Logout</Button>
+              <NavLink to="/cart" label="Cart" />
+              <NavLink to="/orders" label="Orders" />
+              <Button
+                onClick={handleLogout}
+                sx={{ color: '#d1d5db', fontWeight: 500, textTransform: 'none' }}
+              >
+                Logout
+              </Button>
             </>
           ) : (
             <>
-              <Button color="inherit" component={Link} to="/login">Login</Button>
-              {/*<Button color="inherit" component={Link} to="/register">Register</Button>*/}
+              <NavLink to="/login" label="Login" />
+              <NavLink to="/register" label="Register" />
             </>
           )}
         </Box>
@@ -36,5 +54,24 @@ const Navbar = () => {
     </AppBar>
   );
 };
+
+// 🔧 Consistent Nav Button Style
+const NavLink = ({ to, label }) => (
+  <Button
+    component={Link}
+    to={to}
+    sx={{
+      color: '#d1d5db',
+      fontWeight: 500,
+      textTransform: 'none',
+      '&:hover': {
+        color: '#ffffff',
+        backgroundColor: 'rgba(255, 255, 255, 0.08)'
+      }
+    }}
+  >
+    {label}
+  </Button>
+);
 
 export default Navbar;

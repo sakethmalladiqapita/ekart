@@ -13,7 +13,7 @@ const Footer = () => {
         © {new Date().getFullYear()} eKart. All rights reserved.
       </div>
       <div style={{ fontSize: '0.85rem', marginTop: '8px' }}>
-        Built with ❤️ using React, .NET & MongoDB.
+        Built using React, .NET & MongoDB.
       </div>
     </footer>
   );

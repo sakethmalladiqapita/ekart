@@ -1,3 +1,5 @@
+using MongoDB.Bson;
+
 public class OrderCreatedEvent
 {
     public string OrderId { get; }

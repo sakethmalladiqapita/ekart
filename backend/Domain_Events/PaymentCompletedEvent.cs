@@ -1,3 +1,5 @@
+using MongoDB.Bson;
+
 public class PaymentCompletedEvent
 {
     public string OrderId { get; }

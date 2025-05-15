@@ -18,8 +18,21 @@ public class ProductService : IProductService
     }
 
     public async Task<Product?> GetByIdAsync(string id)
-{
-    return await _products.Find(p => p.Id == id).FirstOrDefaultAsync();
-}
+    {
+        return await _products.Find(p => p.Id == id).FirstOrDefaultAsync();
+    }
 
-}
+    // ✅ Pagination support
+    public async Task<List<Product>> GetProductsAsync(int page = 1, int pageSize = 8)
+    {
+        return await _products.Find(_ => true)
+            .Skip((page - 1) * pageSize)
+            .Limit(pageSize)
+            .ToListAsync();
+    }
+
+    public async Task<int> GetTotalProductCountAsync()
+    {
+        return (int)await _products.CountDocumentsAsync(_ => true);
+    }
+} 

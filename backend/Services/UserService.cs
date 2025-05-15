@@ -1,3 +1,7 @@
+// === 1. Remove cart-related logic from UserService and delegate to CartService ===
+// === Updated UserService.cs ===
+
+using ekart.Services;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -7,132 +11,61 @@ public class UserService : IUserService
     private readonly IMongoCollection<User> _users;
     private readonly IProductService _products;
     private readonly IOrderService _orderService;
+    private readonly ICartService _cartService;
 
-    public UserService(IOptions<DatabaseSettings> settings, IProductService productService, IOrderService orderService)
+    public UserService(IOptions<DatabaseSettings> settings, IProductService productService, IOrderService orderService, ICartService cartService)
     {
         var client = new MongoClient(settings.Value.ConnectionString);
         var database = client.GetDatabase(settings.Value.DatabaseName);
         _users = database.GetCollection<User>(settings.Value.UserCollection);
         _products = productService;
         _orderService = orderService;
+        _cartService = cartService;
     }
 
-public async Task<User?> AuthenticateAsync(string email, string password)
-{
-    Console.WriteLine($"Trying login: {email} / {password}");
-    var filter = Builders<User>.Filter.Eq("email", email);
-var user = await _users.Find(filter).FirstOrDefaultAsync();
-
-    if (user == null)
+    public async Task<User?> AuthenticateAsync(string email, string password)
     {
-        Console.WriteLine("No user found.");
-        return null;
+        var filter = Builders<User>.Filter.Eq("email", email);
+        var user = await _users.Find(filter).FirstOrDefaultAsync();
+        if (user == null) return null;
+        return user.PasswordHash.Trim() == password.Trim() ? user : null;
     }
 
-    Console.WriteLine($"DB password: '{user.PasswordHash}' | Input password: '{password}'");
-
-    // Add trim check
-    if (user.PasswordHash.Trim() == password.Trim())
+    public async Task<User> CreateUserAsync(User user)
     {
-        Console.WriteLine("Password match");
+        if (string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.PasswordHash))
+            throw new Exception("Email and password are required");
+
+        var existingUser = await _users.Find(u => u.Email == user.Email).FirstOrDefaultAsync();
+        if (existingUser != null)
+            throw new Exception("User with this email already exists");
+
+        user.Id = ObjectId.GenerateNewId().ToString();
+        user.Orders = new List<OrderSummary>();
+        user.Cart = new List<CartItem>();
+
+        await _users.InsertOneAsync(user);
         return user;
     }
-    else
+
+    public async Task<List<CartItem>> GetCartAsync(string userId)
     {
-        Console.WriteLine("Password mismatch");
-        return null;
+        return await _cartService.GetCartAsync(userId);
     }
-}
-
-public async Task<User> CreateUserAsync(User user)
-{
-    if (string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.PasswordHash))
-        throw new Exception("Email and password are required");
-
-    var existingUser = await _users.Find(u => u.Email == user.Email).FirstOrDefaultAsync();
-    if (existingUser != null)
-        throw new Exception("User with this email already exists");
-
-    user.Id = ObjectId.GenerateNewId().ToString();
-    user.Orders = new List<OrderSummary>();
-    user.Cart = new List<CartItem>();
-
-    await _users.InsertOneAsync(user);
-    return user;
-}
-
-    
 
     public async Task AddToCartAsync(string userId, string productId, int quantity)
     {
-        var user = await _users.Find(u => u.Id == userId).FirstOrDefaultAsync();
-        var product = (await _products.GetAllAsync()).FirstOrDefault(p => p.Id == productId);
-
-        if (user != null && product != null)
-        {
-            var existingItem = user.Cart.FirstOrDefault(c => c.ProductId == productId);
-            if (existingItem != null)
-                existingItem.Quantity += quantity;
-            else
-                user.Cart.Add(new CartItem
-                {
-                    ProductId = productId,
-                    ProductName = product.Name,
-                    Quantity = quantity,
-                    UnitPrice = product.Price
-                });
-
-            await _users.ReplaceOneAsync(u => u.Id == userId, user);
-        }
+        await _cartService.AddToCartAsync(userId, productId, quantity);
     }
-
-public async Task<List<CartItem>> GetCartAsync(string userId)
-{
-    var user = await _users.Find(u => u.Id == userId).FirstOrDefaultAsync();
-    var cartItems = new List<CartItem>();
-
-    foreach (var item in user.Cart)
-    {
-        var product = await _products.GetByIdAsync(item.ProductId);
-        if (product == null) continue;
-
-        cartItems.Add(new CartItem
-        {
-            ProductId = product.Id,
-            ProductName = product.Name,
-            UnitPrice = product.Price,
-            Quantity = item.Quantity,
-            ImageUrl = product.ImageUrl // Add this property in Product.cs if not there
-        });
-    }
-
-    return cartItems;
-}
-
 
     public async Task<Order> CheckoutCartAsync(string userId)
     {
-        var user = await _users.Find(u => u.Id == userId).FirstOrDefaultAsync();
-        if (user == null || !user.Cart.Any()) throw new Exception("Cart is empty or user not found");
-
-        var order = new Order
-        {
-            Id = ObjectId.GenerateNewId().ToString(),
-            UserId = userId,
-            OrderDate = DateTime.UtcNow,
-            Status = "Pending",
-            ProductItems = user.Cart.Select(item => new OrderItem
-            {
-                ProductId = item.ProductId,
-                Quantity = item.Quantity,
-                PriceAtPurchase = item.UnitPrice
-            }).ToList(),
-            TotalAmount = user.Cart.Sum(item => item.UnitPrice * item.Quantity)
-        };
+        var order = await _cartService.CheckoutCartAsync(userId);
+        if (order == null) throw new Exception("Cart is empty or user not found");
 
         await _orderService.CreateOrderAsync(order);
-        user.Cart.Clear();
 
+        var user = await _users.Find(u => u.Id == userId).FirstOrDefaultAsync();
         user.Orders.Add(new OrderSummary
         {
             OrderId = order.Id,

@@ -6,20 +6,25 @@ using Razorpay.Api;
 public class PaymentService : IPaymentService
 {
     private readonly IMongoCollection<Payment> _payments;
+    private readonly IMongoCollection<Order> _orders;
+    private readonly IMongoCollection<Delivery> _deliveries;
     private readonly string _razorpayKey;
     private readonly string _razorpaySecret;
 
 
-    public PaymentService(IOptions<DatabaseSettings> dbSettings, IOptions<RazorpaySettings> razorpayOptions)
+      public PaymentService(
+        IOptions<DatabaseSettings> dbSettings,
+        IOptions<RazorpaySettings> razorpayOptions,
+        IMongoClient mongoClient)
     {
-        var client = new MongoClient(dbSettings.Value.ConnectionString);
-        var database = client.GetDatabase(dbSettings.Value.DatabaseName);
+        var database = mongoClient.GetDatabase(dbSettings.Value.DatabaseName);
         _payments = database.GetCollection<Payment>(dbSettings.Value.PaymentCollection);
+        _orders = database.GetCollection<Order>(dbSettings.Value.OrderCollection);
+        _deliveries = database.GetCollection<Delivery>("DeliveriesData");
 
         _razorpayKey = razorpayOptions.Value.Key;
         _razorpaySecret = razorpayOptions.Value.Secret;
     }
-
 
     public async Task<object> CreateRazorpayOrderAsync(string orderId, decimal amount)
     {
@@ -35,42 +40,30 @@ public class PaymentService : IPaymentService
         return order.Attributes;
     }
 
-public async Task ConfirmPaymentAsync(ConfirmPaymentRequest request)
-{
-    // 1. Record payment
-    var payment = new Payment
+        public async Task ConfirmPaymentAsync(ConfirmPaymentRequest request)
     {
-        Id = ObjectId.GenerateNewId().ToString(),
-        UserId = "", // Optional: Load from order if needed
-        OrderId = request.OrderId,
-        Amount = 0,  // Optional: can be set from Razorpay API if desired
-        PaymentStatus = "Success",
-        PaymentDate = DateTime.UtcNow
-    };
-    await _payments.InsertOneAsync(payment);
+        var payment = new Payment
+        {
+            Id = ObjectId.GenerateNewId().ToString(),
+            OrderId = request.OrderId,
+            Amount = 0,
+            PaymentStatus = "Success",
+            PaymentDate = DateTime.UtcNow
+        };
 
-    // 2. Connect to Mongo and collections
-    var client = new MongoClient("mongodb://localhost:27017"); // Or inject this
-    var database = client.GetDatabase("ekartdatabase");
-    var orders = database.GetCollection<Order>("OrdersData");
-    var deliveries = database.GetCollection<Delivery>("DeliveriesData");
+        await _payments.InsertOneAsync(payment);
 
-    // 3. Update order status to "Successful"
-    var updateOrder = Builders<Order>.Update.Set(o => o.Status, "Successful");
-    var result = await orders.UpdateOneAsync(o => o.Id == request.OrderId, updateOrder);
+        var updateOrder = Builders<Order>.Update.Set(o => o.Status, "Successful");
+        await _orders.UpdateOneAsync(o => o.Id == request.OrderId, updateOrder);
 
-    // 4. Create delivery record if order update succeeded
-    if (result.ModifiedCount > 0)
-    {
         var delivery = new Delivery
         {
             OrderId = request.OrderId,
             DeliveryStatus = "Processing",
             ExpectedDate = DateTime.UtcNow.AddDays(3)
         };
-        await deliveries.InsertOneAsync(delivery);
+        await _deliveries.InsertOneAsync(delivery);
     }
-}
 
 
     public async Task<string> GetPaymentStatusAsync(string orderId)

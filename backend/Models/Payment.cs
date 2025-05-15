@@ -22,4 +22,6 @@ public class Payment
 
     [BsonElement("paymentDate")]
     public DateTime PaymentDate { get; set; }
+    public string? Signature { get; set; }
+
 }

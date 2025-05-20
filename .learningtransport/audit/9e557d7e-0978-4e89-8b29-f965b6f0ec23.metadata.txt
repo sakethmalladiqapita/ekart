@@ -1,0 +1,21 @@
+{
+  "NServiceBus.MessageId": "cc7119be-02ef-48cb-9657-b2e200add8df",
+  "NServiceBus.MessageIntent": "Publish",
+  "NServiceBus.ConversationId": "012f66fa-45a6-4a7e-9eec-b2e200add8e0",
+  "NServiceBus.CorrelationId": "cc7119be-02ef-48cb-9657-b2e200add8df",
+  "NServiceBus.ReplyToAddress": "PaymentService",
+  "NServiceBus.OriginatingMachine": "Qap-7V0YTL3",
+  "NServiceBus.OriginatingEndpoint": "PaymentService",
+  "$.diagnostics.originating.hostid": "02a5dfd11adf15adf6fc4de3469e940f",
+  "NServiceBus.ContentType": "application\/json",
+  "NServiceBus.EnclosedMessageTypes": "Events.Messages.OrderCreatedEvent, backend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+  "NServiceBus.Version": "9.2.7",
+  "NServiceBus.TimeSent": "2025-05-19 10:32:57:500515 Z",
+  "traceparent": "00-a22690c6ca5405db7d95b5c7f34618de-a36036772420c438-00",
+  "NServiceBus.ProcessingStarted": "2025-05-19 10:32:57:569019 Z",
+  "NServiceBus.ProcessingEnded": "2025-05-19 10:32:58:833096 Z",
+  "$.diagnostics.hostid": "02a5dfd11adf15adf6fc4de3469e940f",
+  "$.diagnostics.hostdisplayname": "Qap-7V0YTL3",
+  "NServiceBus.ProcessingMachine": "Qap-7V0YTL3",
+  "NServiceBus.ProcessingEndpoint": "PaymentService"
+}

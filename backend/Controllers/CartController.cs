@@ -29,8 +29,9 @@ namespace ekart.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddToCart([FromBody] AddToCartRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (string.IsNullOrWhiteSpace(request.ProductId) || request.Quantity == 0)
+    return BadRequest("Invalid product ID or quantity.");
+
 
             var userId = GetUserIdFromToken();
             await _userService.AddToCartAsync(userId, request.ProductId, request.Quantity);

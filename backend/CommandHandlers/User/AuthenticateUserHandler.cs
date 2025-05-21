@@ -2,6 +2,7 @@ using ekart.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using MediatR;
+using BCrypt.Net;
 
 public class AuthenticateUserHandler : IRequestHandler<AuthenticateUserCommand, User?>
 {
@@ -16,6 +17,11 @@ public class AuthenticateUserHandler : IRequestHandler<AuthenticateUserCommand, 
     public async Task<User?> Handle(AuthenticateUserCommand command, CancellationToken cancellationToken)
     {
         var user = await _users.Find(u => u.Email == command.Email).FirstOrDefaultAsync(cancellationToken);
-        return user?.PasswordHash.Trim() == command.Password.Trim() ? user : null;
+
+        if (user == null)
+            return null;
+
+        bool isValid = BCrypt.Net.BCrypt.Verify(command.Password.Trim(), user.PasswordHash);
+        return isValid ? user : null;
     }
 }

@@ -34,22 +34,23 @@ const CreateUserPage = () => {
     }
   };
 
-  // 📤 Form submission logic
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setMessage(''); // Clear previous messages
+  
     try {
       await axios.post('http://localhost:5105/api/users/create', form);
       setMessage('User created successfully!');
     } catch (err) {
       console.error(err);
-
+  
       const fallback = 'Failed to create user';
-
-      // ✅ Handle model state validation errors or raw string errors
+  
       if (err.response?.data?.errors) {
         const allErrors = Object.values(err.response.data.errors).flat();
         setMessage(allErrors.join(' ') || fallback);
+      } else if (err.response?.data?.detail) {
+        setMessage(err.response.data.detail); // ✅ Handle ProblemDetails.detail
       } else if (typeof err.response?.data === 'string') {
         setMessage(err.response.data);
       } else {
@@ -57,6 +58,7 @@ const CreateUserPage = () => {
       }
     }
   };
+  
 
   return (
     <div style={{ maxWidth: '400px', margin: 'auto', padding: '32px' }}>

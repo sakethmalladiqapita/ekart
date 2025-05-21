@@ -593,6 +593,22 @@
         "SkipReason": "File is a .NET runtime assembly."
       },
       {
+        "FilePath": "/usr/lib/dotnet/shared/Microsoft.NETCore.App/8.0.16/System.Windows.dll",
+        "SkipReason": "File is a .NET runtime assembly."
+      },
+      {
+        "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.Extensions.Http.dll",
+        "SkipReason": "File is a .NET runtime assembly."
+      },
+      {
+        "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.AspNetCore.Mvc.Core.dll",
+        "SkipReason": "File is a .NET runtime assembly."
+      },
+      {
+        "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.Extensions.Logging.Debug.dll",
+        "SkipReason": "File is a .NET runtime assembly."
+      },
+      {
         "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.Extensions.Configuration.Binder.dll",
         "SkipReason": "File is a .NET runtime assembly."
       },
@@ -614,22 +630,6 @@
       },
       {
         "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.AspNetCore.HostFiltering.dll",
-        "SkipReason": "File is a .NET runtime assembly."
-      },
-      {
-        "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.AspNetCore.Mvc.Core.dll",
-        "SkipReason": "File is a .NET runtime assembly."
-      },
-      {
-        "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.Extensions.Logging.Debug.dll",
-        "SkipReason": "File is a .NET runtime assembly."
-      },
-      {
-        "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.Extensions.Http.dll",
-        "SkipReason": "File is a .NET runtime assembly."
-      },
-      {
-        "FilePath": "/usr/lib/dotnet/shared/Microsoft.NETCore.App/8.0.16/System.Windows.dll",
         "SkipReason": "File is a .NET runtime assembly."
       },
       {
@@ -666,6 +666,10 @@
       },
       {
         "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.AspNetCore.Authentication.Core.dll",
+        "SkipReason": "File is a .NET runtime assembly."
+      },
+      {
+        "FilePath": "/usr/lib/dotnet/shared/Microsoft.NETCore.App/8.0.16/System.Threading.Tasks.dll",
         "SkipReason": "File is a .NET runtime assembly."
       },
       {
@@ -733,6 +737,34 @@
         "SkipReason": "File is a .NET runtime assembly."
       },
       {
+        "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.Extensions.Options.ConfigurationExtensions.dll",
+        "SkipReason": "File is a .NET runtime assembly."
+      },
+      {
+        "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.Extensions.Primitives.dll",
+        "SkipReason": "File is a .NET runtime assembly."
+      },
+      {
+        "FilePath": "/home/sakethm/Downloads/ecommerce/backend/bin/Debug/net8.0/Microsoft.IdentityModel.Logging.dll",
+        "SkipReason": "File is a .NET runtime assembly."
+      },
+      {
+        "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.AspNetCore.Diagnostics.HealthChecks.dll",
+        "SkipReason": "File is a .NET runtime assembly."
+      },
+      {
+        "FilePath": "/usr/lib/dotnet/shared/Microsoft.NETCore.App/8.0.16/System.Security.Claims.dll",
+        "SkipReason": "File is a .NET runtime assembly."
+      },
+      {
+        "FilePath": "/home/sakethm/Downloads/ecommerce/backend/bin/Debug/net8.0/Microsoft.IdentityModel.JsonWebTokens.dll",
+        "SkipReason": "File is a .NET runtime assembly."
+      },
+      {
+        "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.AspNetCore.StaticFiles.dll",
+        "SkipReason": "File is a .NET runtime assembly."
+      },
+      {
         "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.AspNetCore.Mvc.Formatters.Json.dll",
         "SkipReason": "File is a .NET runtime assembly."
       },
@@ -742,6 +774,14 @@
       },
       {
         "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.AspNetCore.Components.Server.dll",
+        "SkipReason": "File is a .NET runtime assembly."
+      },
+      {
+        "FilePath": "/usr/lib/dotnet/shared/Microsoft.NETCore.App/8.0.16/System.Collections.Concurrent.dll",
+        "SkipReason": "File is a .NET runtime assembly."
+      },
+      {
+        "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.AspNetCore.Http.Connections.Common.dll",
         "SkipReason": "File is a .NET runtime assembly."
       },
       {
@@ -758,38 +798,6 @@
       },
       {
         "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.Extensions.ObjectPool.dll",
-        "SkipReason": "File is a .NET runtime assembly."
-      },
-      {
-        "FilePath": "/usr/lib/dotnet/shared/Microsoft.NETCore.App/8.0.16/System.Security.Claims.dll",
-        "SkipReason": "File is a .NET runtime assembly."
-      },
-      {
-        "FilePath": "/home/sakethm/Downloads/ecommerce/backend/bin/Debug/net8.0/Microsoft.IdentityModel.JsonWebTokens.dll",
-        "SkipReason": "File is a .NET runtime assembly."
-      },
-      {
-        "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.AspNetCore.StaticFiles.dll",
-        "SkipReason": "File is a .NET runtime assembly."
-      },
-      {
-        "FilePath": "/usr/lib/dotnet/shared/Microsoft.NETCore.App/8.0.16/System.Threading.Tasks.dll",
-        "SkipReason": "File is a .NET runtime assembly."
-      },
-      {
-        "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.Extensions.Options.ConfigurationExtensions.dll",
-        "SkipReason": "File is a .NET runtime assembly."
-      },
-      {
-        "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.Extensions.Primitives.dll",
-        "SkipReason": "File is a .NET runtime assembly."
-      },
-      {
-        "FilePath": "/home/sakethm/Downloads/ecommerce/backend/bin/Debug/net8.0/Microsoft.IdentityModel.Logging.dll",
-        "SkipReason": "File is a .NET runtime assembly."
-      },
-      {
-        "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.AspNetCore.Diagnostics.HealthChecks.dll",
         "SkipReason": "File is a .NET runtime assembly."
       },
       {
@@ -1353,14 +1361,6 @@
         "SkipReason": "File is a .NET runtime assembly."
       },
       {
-        "FilePath": "/usr/lib/dotnet/shared/Microsoft.AspNetCore.App/8.0.16/Microsoft.AspNetCore.Http.Connections.Common.dll",
-        "SkipReason": "File is a .NET runtime assembly."
-      },
-      {
-        "FilePath": "/usr/lib/dotnet/shared/Microsoft.NETCore.App/8.0.16/System.Collections.Concurrent.dll",
-        "SkipReason": "File is a .NET runtime assembly."
-      },
-      {
         "FilePath": "/usr/lib/dotnet/shared/Microsoft.NETCore.App/8.0.16/System.Private.CoreLib.dll",
         "SkipReason": "File is a .NET runtime assembly."
       }
@@ -1878,7 +1878,7 @@
     "ProcessorCount": 8,
     "Is64BitProcess": true,
     "CLRVersion": "8.0.16",
-    "WorkingSet": 96927744,
+    "WorkingSet": 97329152,
     "SystemPageSize": 4096,
     "HostName": "Qap-7V0YTL3",
     "UserName": "sakethm",

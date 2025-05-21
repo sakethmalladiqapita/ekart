@@ -1,12 +1,23 @@
-    /// Value Object.
-    /// Represents a shipping address for the user.
-namespace ekart.Models
+public class Address
 {
-    // Value Object: Represents a shipping address
-    public class Address
+    public string Street { get; private set; }
+    public string City { get; private set; }
+    public string Zip { get; private set; }
+    public string Country { get; private set; } 
+    public string State { get; private set; }  
+
+    public Address(string street, string city, string zip, string country, string state)
     {
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string Zip { get; set; }
+        Street = street;
+        City = city;
+        Zip = zip;
+        Country = country;
+        State = state;
     }
+
+    public override bool Equals(object? obj) => obj is Address other &&
+        Street == other.Street && City == other.City && Zip == other.Zip &&
+        Country == other.Country && State == other.State;
+
+    public override int GetHashCode() => HashCode.Combine(Street, City, Zip, Country, State);
 }

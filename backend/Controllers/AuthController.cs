@@ -22,13 +22,13 @@ namespace ekart.Controllers
             _config = config;
         }
 
-        // Login and generate JWT token
+        // ✅ Login and generate JWT token with input validation
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid credentials.");
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
+                return BadRequest("Email and password are required.");
 
             var user = await _userService.AuthenticateAsync(request.Email, request.Password);
             if (user == null)
@@ -50,15 +50,15 @@ namespace ekart.Controllers
         // JWT creation logic
         private string GenerateJwtToken(User user)
         {
-            var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"]!); // load secret key
+            var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"]!);
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var claims = new[]
             {
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, "User")
-        };
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, "User")
+            };
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

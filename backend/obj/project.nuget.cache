@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "rf3TezciVJK51hjr3bFqDNRqSlcgbAfFi4MtLgN/S5I9LDAL/EX1WuXFspFLbCj267mAKz3gTN3RPUy3g3vSPw==",
+  "dgSpecHash": "/QcXMZxA4D+xxav19voI1xgxewUlb0bPmER+soVn8PbgANbnCy9i4dqXfCTdwvn3XYpdHOcFaYCM7yFTe4ZXGg==",
   "success": true,
   "projectFilePath": "/home/sakethm/Downloads/ecommerce/backend/backend.csproj",
   "expectedPackageFiles": [
+    "/home/sakethm/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
     "/home/sakethm/.nuget/packages/dnsclient/1.6.1/dnsclient.1.6.1.nupkg.sha512",
     "/home/sakethm/.nuget/packages/mediatr/11.1.0/mediatr.11.1.0.nupkg.sha512",
     "/home/sakethm/.nuget/packages/mediatr.contracts/1.0.1/mediatr.contracts.1.0.1.nupkg.sha512",

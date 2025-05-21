@@ -1,32 +1,54 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Paper } from '@mui/material';
-import { useAuth } from '../contexts/AuthContext'; // 🔐 Auth context for login token storage
+import { Box, TextField, Button, Typography, Paper, Alert } from '@mui/material';
+import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
-  // 📋 Local state for login form
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({ email: '', password: '' });
+  const [generalError, setGeneralError] = useState('');
 
-  const { login } = useAuth(); // ✅ Access login function from context
-  const navigate = useNavigate(); // 🔀 For redirection after login
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  // 🧾 Handles form submission
+  const validate = () => {
+    let isValid = true;
+    const errors = { email: '', password: '' };
+
+    // Basic email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim()) {
+      errors.email = 'Email is required.';
+      isValid = false;
+    } else if (!emailRegex.test(email.trim())) {
+      errors.email = 'Invalid email format.';
+      isValid = false;
+    }
+
+    if (!password.trim()) {
+      errors.password = 'Password is required.';
+      isValid = false;
+    }
+
+    setFieldErrors(errors);
+    return isValid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setGeneralError('');
+
+    if (!validate()) return;
+
     try {
-      // 🔐 POST login credentials to backend API
       const res = await axios.post('/api/auth/login', { email, password });
       const { token, user } = res.data;
-
-      // ✅ Store user and token in global auth context
       login({ token, user });
-
-      // 🔀 Redirect to homepage on success
       navigate('/');
     } catch (err) {
-      alert('Login failed');
+      setGeneralError('Invalid email or password.');
     }
   };
 
@@ -35,7 +57,8 @@ const LoginPage = () => {
       <Paper sx={{ p: 4, width: 400 }}>
         <Typography variant="h5" gutterBottom>Login</Typography>
 
-        {/* 📥 Login Form */}
+        {generalError && <Alert severity="error" sx={{ mb: 2 }}>{generalError}</Alert>}
+
         <form onSubmit={handleSubmit}>
           <TextField
             label="Email"
@@ -43,7 +66,8 @@ const LoginPage = () => {
             margin="normal"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
+            error={!!fieldErrors.email}
+            helperText={fieldErrors.email}
           />
           <TextField
             label="Password"
@@ -52,7 +76,8 @@ const LoginPage = () => {
             margin="normal"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
+            error={!!fieldErrors.password}
+            helperText={fieldErrors.password}
           />
           <Button
             type="submit"

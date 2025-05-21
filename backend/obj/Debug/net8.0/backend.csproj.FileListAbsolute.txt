@@ -70,6 +70,7 @@
 /home/sakethm/Downloads/ecommerce/backend/bin/Debug/net8.0/backend.runtimeconfig.json
 /home/sakethm/Downloads/ecommerce/backend/bin/Debug/net8.0/backend.dll
 /home/sakethm/Downloads/ecommerce/backend/bin/Debug/net8.0/backend.pdb
+/home/sakethm/Downloads/ecommerce/backend/bin/Debug/net8.0/BCrypt.Net-Next.dll
 /home/sakethm/Downloads/ecommerce/backend/bin/Debug/net8.0/DnsClient.dll
 /home/sakethm/Downloads/ecommerce/backend/bin/Debug/net8.0/MediatR.dll
 /home/sakethm/Downloads/ecommerce/backend/bin/Debug/net8.0/MediatR.Contracts.dll

@@ -39,17 +39,26 @@ namespace ekart.Middleware
         // Formats the exception into a standardized HTTP 500 response using ProblemDetails.
         // </summary>
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
-        {
-            var problemDetails = new ProblemDetails
-            {
-                Status = (int)HttpStatusCode.InternalServerError,
-                Title = "An unexpected error occurred",
-                Detail = exception.Message
-            };
+{
+    var statusCode = exception switch
+    {
+        ArgumentException => (int)HttpStatusCode.BadRequest,
+        UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
+        InvalidOperationException => (int)HttpStatusCode.Conflict,
+        _ => (int)HttpStatusCode.InternalServerError
+    };
 
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = problemDetails.Status.Value;
-            return context.Response.WriteAsync(JsonSerializer.Serialize(problemDetails));
-        }
+    var problemDetails = new ProblemDetails
+    {
+        Status = statusCode,
+        Title = "An error occurred",
+        Detail = exception.Message
+    };
+
+    context.Response.ContentType = "application/json";
+    context.Response.StatusCode = problemDetails.Status.Value;
+    return context.Response.WriteAsync(JsonSerializer.Serialize(problemDetails));
+}
+
     }
 }

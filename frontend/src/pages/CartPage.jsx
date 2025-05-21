@@ -26,7 +26,10 @@ const CartPage = () => {
     if (!user) return navigate('/login');
     fetchCart();
   }, [user, navigate]);
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   // ➕➖ Update quantity of a specific cart item
   const updateQuantity = async (productId, newQty) => {
     if (newQty < 1) return;

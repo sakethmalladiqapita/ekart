@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
 import { useAuth } from '../contexts/AuthContext';
@@ -97,6 +97,11 @@ const CheckoutPage = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
 
   // 🔐 Block access if not logged in
   if (!user) {

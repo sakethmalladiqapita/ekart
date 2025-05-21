@@ -10,7 +10,6 @@ public class OrderCreatedHandler : IHandleMessages<OrderCreatedEvent>
         _createOrderHandler = createOrderHandler;
     }
 
-    // Handle OrderCreatedEvent and trigger Razorpay order creation
     public async Task Handle(OrderCreatedEvent message, IMessageHandlerContext context)
     {
         var command = new CreateRazorpayOrderCommand
@@ -19,6 +18,6 @@ public class OrderCreatedHandler : IHandleMessages<OrderCreatedEvent>
             Amount = message.TotalAmount
         };
 
-        await _createOrderHandler.Handle(command);
+        await _createOrderHandler.Handle(command, CancellationToken.None); // ✅ fix
     }
 }

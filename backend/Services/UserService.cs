@@ -1,4 +1,5 @@
 using ekart.Models;
+using MediatR;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -6,56 +7,45 @@ namespace ekart.Services
 {
     public class UserService : IUserService
     {
+        private readonly IMediator _mediator;
         private readonly ICartService _cartService;
         private readonly IOrderService _orderService;
-        private readonly CreateUserHandler _createUserHandler;
-        private readonly AuthenticateUserHandler _authHandler;
         private readonly IMongoCollection<User> _users;
 
         public UserService(
+            IMediator mediator,
             ICartService cartService,
             IOrderService orderService,
-            CreateUserHandler createUserHandler,
-            AuthenticateUserHandler authHandler,
             IMongoClient mongoClient,
             IOptions<DatabaseSettings> settings)
         {
+            _mediator = mediator;
             _cartService = cartService;
             _orderService = orderService;
-            _createUserHandler = createUserHandler;
-            _authHandler = authHandler;
-
             var db = mongoClient.GetDatabase(settings.Value.DatabaseName);
             _users = db.GetCollection<User>(settings.Value.UserCollection);
         }
 
-        // Authenticate a user using CQRS handler
         public async Task<User?> AuthenticateAsync(string email, string password)
         {
-            var command = new AuthenticateUserCommand { Email = email, Password = password };
-            return await _authHandler.Handle(command);
+            return await _mediator.Send(new AuthenticateUserCommand { Email = email, Password = password });
         }
 
-        // Create a user using CQRS handler
         public async Task<User> CreateUserAsync(User user)
         {
-            var command = new CreateUserCommand { Email = user.Email, Password = user.PasswordHash };
-            return await _createUserHandler.Handle(command);
+            return await _mediator.Send(new CreateUserCommand { Email = user.Email, Password = user.PasswordHash });
         }
 
-        // Get items in the user's cart
         public async Task<List<CartItem>> GetCartAsync(string userId)
         {
             return await _cartService.GetCartAsync(userId);
         }
 
-        // Add item to cart
         public async Task AddToCartAsync(string userId, string productId, int quantity)
         {
             await _cartService.AddToCartAsync(userId, productId, quantity);
         }
 
-        // Checkout the user's cart and create the order
         public async Task<Order> CheckoutCartAsync(string userId)
         {
             var order = await _cartService.CheckoutCartAsync(userId);
@@ -78,3 +68,4 @@ namespace ekart.Services
         }
     }
 }
+

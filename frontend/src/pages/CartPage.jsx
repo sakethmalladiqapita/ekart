@@ -12,7 +12,7 @@ const CartPage = () => {
   // 🔄 Fetch user's cart from backend
   const fetchCart = async () => {
     try {
-      const res = await axios.get(`/api/cart/${user.id}`);
+      const res = await axios.get(`/api/cart`);
       setCart(res.data);
     } catch (err) {
       console.error(err);
@@ -33,11 +33,11 @@ const CartPage = () => {
     const item = cart.find(c => c.productId === productId);
     const delta = newQty - item.quantity;
     try {
-      await axios.post('/api/cart/add', {
-        userId: user.id,
+      axios.post('/api/cart/add', {
         productId,
-        quantity: delta
+        quantity:delta
       });
+      
       await fetchCart();
     } catch (err) {
       console.error(err);
@@ -49,7 +49,6 @@ const CartPage = () => {
     try {
       for (const item of cart) {
         await axios.post('/api/cart/add', {
-          userId: user.id,
           productId: item.productId,
           quantity: -item.quantity
         });

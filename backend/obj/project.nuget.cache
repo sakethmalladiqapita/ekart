@@ -1,10 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "YtcKldp782lRddCYL6AnP5yLR7DfZzeCCRYSQUMzYNeG2nLj5HPsvuxm8r9IN7u8vqQAzMHrZMZJLMNilYCSpg==",
+  "dgSpecHash": "rf3TezciVJK51hjr3bFqDNRqSlcgbAfFi4MtLgN/S5I9LDAL/EX1WuXFspFLbCj267mAKz3gTN3RPUy3g3vSPw==",
   "success": true,
-  "projectFilePath": "/home/sakethm/Desktop/sample_dotnet/ecommerce/backend/backend.csproj",
+  "projectFilePath": "/home/sakethm/Downloads/ecommerce/backend/backend.csproj",
   "expectedPackageFiles": [
     "/home/sakethm/.nuget/packages/dnsclient/1.6.1/dnsclient.1.6.1.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/mediatr/11.1.0/mediatr.11.1.0.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/mediatr.contracts/1.0.1/mediatr.contracts.1.0.1.nupkg.sha512",
+    "/home/sakethm/.nuget/packages/mediatr.extensions.microsoft.dependencyinjection/11.1.0/mediatr.extensions.microsoft.dependencyinjection.11.1.0.nupkg.sha512",
     "/home/sakethm/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/8.0.4/microsoft.aspnetcore.authentication.jwtbearer.8.0.4.nupkg.sha512",
     "/home/sakethm/.nuget/packages/microsoft.aspnetcore.jsonpatch/8.0.4/microsoft.aspnetcore.jsonpatch.8.0.4.nupkg.sha512",
     "/home/sakethm/.nuget/packages/microsoft.aspnetcore.mvc.newtonsoftjson/8.0.4/microsoft.aspnetcore.mvc.newtonsoftjson.8.0.4.nupkg.sha512",

@@ -8,6 +8,8 @@ using MongoDB.Driver;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using MediatR;
+using ekart.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -107,6 +109,10 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+
+// --------------------- MediatR for CQRS ----------------------
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddMediatR(typeof(AddToCartHandler).Assembly);
 
 var app = builder.Build();
 

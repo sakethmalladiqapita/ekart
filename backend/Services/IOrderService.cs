@@ -1,16 +1,8 @@
 using ekart.Models;
 
-namespace ekart.Services
+public interface IOrderService
 {
-    public interface IOrderService
-    {
-        // Immediately place an order for a single product
-        Task<Order> BuyNowAsync(string userId, string productId, int quantity);
-
-        // Get list of orders placed by a user
-        Task<List<Order>> GetUserOrdersAsync(string userId);
-
-        // Save a new order
-        Task CreateOrderAsync(Order order);
-    }
+    Task CreateOrderAsync(Order order);
+    Task<List<Order>> GetUserOrdersAsync(); // 🔄 no userId
+    Task<Order> BuyNowAsync(string productId, int quantity); // 🔄 no userId
 }

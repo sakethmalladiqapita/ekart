@@ -1,18 +1,19 @@
+using MediatR;
+
 namespace ekart.Services
 {
     public class DeliveryService : IDeliveryService
     {
-        private readonly GetDeliveryStatusHandler _statusHandler;
+        private readonly IMediator _mediator;
 
-        public DeliveryService(GetDeliveryStatusHandler statusHandler)
+        public DeliveryService(IMediator mediator)
         {
-            _statusHandler = statusHandler;
+            _mediator = mediator;
         }
 
-        // Fetch current delivery status for the given order ID using CQRS query handler
         public async Task<string> GetStatusAsync(string orderId)
         {
-            return await _statusHandler.Handle(new GetDeliveryStatusQuery
+            return await _mediator.Send(new GetDeliveryStatusQuery
             {
                 OrderId = orderId
             });

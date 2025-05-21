@@ -12,7 +12,7 @@ const ConfirmationPage = () => {
     const fetchDeliveryStatus = async () => {
       try {
         const res = await axios.get(`/api/delivery/status/${orderId}`);
-        setDeliveryStatus(res.data); // Expected to be a string like "Processing", "Shipped", etc.
+        setDeliveryStatus(res.data.deliveryStatus); // ✅ only extract the string
       } catch (err) {
         console.error(err);
         setDeliveryStatus('Unknown');

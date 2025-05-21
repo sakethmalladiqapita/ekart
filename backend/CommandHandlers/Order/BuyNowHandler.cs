@@ -3,12 +3,9 @@ using ekart.Services;
 using Events.Messages;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using MediatR;
 
-/// <summary>
-/// CQRS Command Handler.
-/// Handles BuyNowCommand to immediately place an order for a single product and publish a domain event.
-/// </summary>
-public class BuyNowHandler
+public class BuyNowHandler : IRequestHandler<BuyNowCommand, Order>
 {
     private readonly IMongoCollection<Order> _orders;
     private readonly IProductService _productService;
@@ -29,21 +26,15 @@ public class BuyNowHandler
         _messageSession = messageSession;
     }
 
-    /// <summary>
-    /// Handles a BuyNowCommand by validating the product, creating an order, saving it, and publishing an OrderCreatedEvent.
-    /// </summary>
-    public async Task<Order> Handle(BuyNowCommand command)
+    public async Task<Order> Handle(BuyNowCommand command, CancellationToken cancellationToken)
     {
         var product = await _productService.GetByIdAsync(command.ProductId);
         if (product == null)
             throw new Exception("Product not found");
 
-        // Use the factory to build a valid Order aggregate
         var order = _orderFactory.CreateForDirectPurchase(product, command.Quantity, command.UserId);
+        await _orders.InsertOneAsync(order, cancellationToken: cancellationToken);
 
-        await _orders.InsertOneAsync(order);
-
-        // Publish a domain event after successful order creation
         var orderEvent = new OrderCreatedEvent
         {
             OrderId = order.Id,
@@ -51,8 +42,7 @@ public class BuyNowHandler
             TotalAmount = order.TotalAmount
         };
 
-        await _messageSession.Publish(orderEvent); // Asynchronously notify other services
-
+        await _messageSession.Publish(orderEvent);
         return order;
     }
 }

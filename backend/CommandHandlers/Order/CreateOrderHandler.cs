@@ -2,12 +2,9 @@ using ekart.Models;
 using Events.Messages;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using MediatR;
 
-/// <summary>
-/// CQRS Command Handler.
-/// Handles CreateOrderCommand to place an order (usually from cart checkout) and publish an OrderCreatedEvent.
-/// </summary>
-public class CreateOrderHandler
+public class CreateOrderHandler : IRequestHandler<CreateOrderCommand>
 {
     private readonly IMongoCollection<Order> _orders;
     private readonly IMessageSession _messageSession;
@@ -25,21 +22,11 @@ public class CreateOrderHandler
         _orderFactory = orderFactory;
     }
 
-    /// <summary>
-    /// Creates a new order from provided command data and publishes a domain event.
-    /// </summary>
-    public async Task Handle(CreateOrderCommand command)
+    public async Task<Unit> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
     {
-        // Build order using a centralized factory for consistency and reuse
-        var order = _orderFactory.CreateFromCartItems(
-            command.UserId,
-            command.ProductItems,
-            command.TotalAmount
-        );
+        var order = _orderFactory.CreateFromCartItems(command.UserId, command.ProductItems, command.TotalAmount);
+        await _orders.InsertOneAsync(order, cancellationToken: cancellationToken);
 
-        await _orders.InsertOneAsync(order);
-
-        // Emit domain event for side effects (e.g., payment creation)
         var orderEvent = new OrderCreatedEvent
         {
             OrderId = order.Id,
@@ -48,5 +35,6 @@ public class CreateOrderHandler
         };
 
         await _messageSession.Publish(orderEvent);
+        return Unit.Value;
     }
 }

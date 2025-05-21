@@ -1,53 +1,53 @@
+// ✅ Refactored OrderService.cs using MediatR and IHttpContextAccessor
+using System.Security.Claims;
 using ekart.Models;
+using MediatR;
 
 namespace ekart.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly CreateOrderHandler _createOrderHandler;
-        private readonly GetUserOrdersHandler _getUserOrdersHandler;
-        private readonly BuyNowHandler _buyNowHandler;
+        private readonly IMediator _mediator;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public OrderService(
-            CreateOrderHandler createOrderHandler,
-            GetUserOrdersHandler getUserOrdersHandler,
-            BuyNowHandler buyNowHandler)
+        public OrderService(IMediator mediator, IHttpContextAccessor contextAccessor)
         {
-            _createOrderHandler = createOrderHandler;
-            _getUserOrdersHandler = getUserOrdersHandler;
-            _buyNowHandler = buyNowHandler;
+            _mediator = mediator;
+            _contextAccessor = contextAccessor;
         }
 
-        // Create order using command handler
+        private string GetUserId()
+        {
+            return _contextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? throw new UnauthorizedAccessException("User ID not found in token");
+        }
+
         public async Task CreateOrderAsync(Order order)
         {
-            var command = new CreateOrderCommand
+            await _mediator.Send(new CreateOrderCommand
             {
-                UserId = order.UserId,
+                UserId = GetUserId(),
                 ProductItems = order.ProductItems,
                 TotalAmount = order.TotalAmount
-            };
-
-            await _createOrderHandler.Handle(command);
+            });
         }
 
-        // Get orders for a user
-        public async Task<List<Order>> GetUserOrdersAsync(string userId)
+        public async Task<List<Order>> GetUserOrdersAsync()
         {
-            return await _getUserOrdersHandler.Handle(new GetUserOrdersQuery { UserId = userId });
-        }
-
-        // Buy-now operation
-        public async Task<Order> BuyNowAsync(string userId, string productId, int quantity)
-        {
-            var command = new BuyNowCommand
+            return await _mediator.Send(new GetUserOrdersQuery
             {
-                UserId = userId,
+                UserId = GetUserId()
+            });
+        }
+
+        public async Task<Order> BuyNowAsync(string productId, int quantity)
+        {
+            return await _mediator.Send(new BuyNowCommand
+            {
+                UserId = GetUserId(),
                 ProductId = productId,
                 Quantity = quantity
-            };
-
-            return await _buyNowHandler.Handle(command);
+            });
         }
     }
 }

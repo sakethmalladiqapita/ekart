@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using ekart.Models;
 using ekart.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace ekart.Controllers
+namespace backend.API.Controllers
 {
     [Authorize]
     [ApiController]
@@ -17,24 +17,22 @@ namespace ekart.Controllers
             _orderService = orderService;
         }
 
-        // Place a one-click order ("Buy Now" flow)
+        // ✅ Place a one-click order ("Buy Now" flow)
         [HttpPost("buy-now")]
         public async Task<IActionResult> BuyNow([FromBody] BuyNowRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var order = await _orderService.BuyNowAsync(request.UserId, request.ProductId, request.Quantity);
+            var order = await _orderService.BuyNowAsync(request.ProductId, request.Quantity);
             return Ok(order);
         }
 
-        // Get all orders for a specific user
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetUserOrders(string userId)
+        // ✅ Get orders of the current logged-in user
+        [HttpGet]
+        public async Task<IActionResult> GetUserOrders()
         {
-            if (string.IsNullOrWhiteSpace(userId)) return BadRequest("Invalid User ID");
-
-            var orders = await _orderService.GetUserOrdersAsync(userId);
+            var orders = await _orderService.GetUserOrdersAsync();
             return Ok(orders);
         }
     }

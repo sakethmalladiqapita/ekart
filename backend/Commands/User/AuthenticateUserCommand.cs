@@ -1,16 +1,8 @@
-/// <summary>
-/// CQRS Command.
-/// Represents a request to authenticate a user using their email and password.
-/// </summary>
-public class AuthenticateUserCommand
-{
-    /// <summary>
-    /// The email address entered by the user.
-    /// </summary>
-    public string Email { get; set; }
+using MediatR;
+using ekart.Models;
 
-    /// <summary>
-    /// The plain password entered by the user (should be hashed internally).
-    /// </summary>
+public class AuthenticateUserCommand : IRequest<User?>
+{
+    public string Email { get; set; }
     public string Password { get; set; }
 }

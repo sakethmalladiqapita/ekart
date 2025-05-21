@@ -59,20 +59,15 @@ const CheckoutPage = () => {
       if (!finalOrder) {
         if (location.state?.type === 'buynow') {
           const res = await axios.post('/api/orders/buy-now', {
-            userId: user.id,
             productId: location.state.productId,
             quantity: location.state.quantity
           });
+          
           finalOrder = res.data;
         } else {
           // 🛒 Fallback: assume user came from cart, so trigger cart checkout
-          const res = await axios.post('/api/cart/checkout', {
-            UserId: user.id
-          }, {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
+          const res = await axios.post('/api/cart/checkout');
+
           finalOrder = res.data;
         }
       }

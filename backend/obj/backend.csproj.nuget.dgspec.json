@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/sakethm/Desktop/sample_dotnet/ecommerce/backend/backend.csproj": {}
+    "/home/sakethm/Downloads/ecommerce/backend/backend.csproj": {}
   },
   "projects": {
-    "/home/sakethm/Desktop/sample_dotnet/ecommerce/backend/backend.csproj": {
+    "/home/sakethm/Downloads/ecommerce/backend/backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/sakethm/Desktop/sample_dotnet/ecommerce/backend/backend.csproj",
+        "projectUniqueName": "/home/sakethm/Downloads/ecommerce/backend/backend.csproj",
         "projectName": "backend",
-        "projectPath": "/home/sakethm/Desktop/sample_dotnet/ecommerce/backend/backend.csproj",
+        "projectPath": "/home/sakethm/Downloads/ecommerce/backend/backend.csproj",
         "packagesPath": "/home/sakethm/.nuget/packages/",
-        "outputPath": "/home/sakethm/Desktop/sample_dotnet/ecommerce/backend/obj/",
+        "outputPath": "/home/sakethm/Downloads/ecommerce/backend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/sakethm/.nuget/NuGet/NuGet.Config"
@@ -42,6 +42,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "MediatR": {
+              "target": "Package",
+              "version": "[11.1.0, )"
+            },
+            "MediatR.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[11.1.0, )"
+            },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[8.0.4, )"

@@ -1,16 +1,8 @@
-/// <summary>
-/// CQRS Command.
-/// Represents a request to create a new user account during registration.
-/// </summary>
-public class CreateUserCommand
-{
-    /// <summary>
-    /// The email address provided during registration.
-    /// </summary>
-    public string Email { get; set; }
+using MediatR;
+using ekart.Models;
 
-    /// <summary>
-    /// The raw or hashed password for the new user (depending on service implementation).
-    /// </summary>
+public class CreateUserCommand : IRequest<User>
+{
+    public string Email { get; set; }
     public string Password { get; set; }
 }

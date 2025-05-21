@@ -11,8 +11,9 @@ const OrderHistoryPage = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get(`/api/orders/${user.id}`);
+        const res = await axios.get('/api/orders');
         setOrders(res.data);
+
       } catch (err) {
         console.error(err);
       } finally {

@@ -16,14 +16,18 @@ namespace ekart.Controllers
             _deliveryService = deliveryService;
         }
 
-        // Get delivery status by order ID
+        // ✅ Get delivery status by order ID
         [HttpGet("status/{orderId}")]
         public async Task<IActionResult> GetStatus(string orderId)
         {
-            if (string.IsNullOrWhiteSpace(orderId)) return BadRequest("Invalid Order ID");
+            if (string.IsNullOrWhiteSpace(orderId))
+                return BadRequest("Invalid Order ID");
 
             var status = await _deliveryService.GetStatusAsync(orderId);
-            return status == null ? NotFound() : Ok(status);
+            if (string.IsNullOrWhiteSpace(status))
+                return NotFound(new { message = "No delivery info found for this order." });
+
+            return Ok(new { orderId, deliveryStatus = status });
         }
     }
 }

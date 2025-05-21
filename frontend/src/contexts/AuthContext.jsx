@@ -1,45 +1,46 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
-// ✅ Create context for global auth state
 const AuthContext = createContext();
 
-// ✅ AuthProvider wraps the app and exposes login/logout/token/user
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true); // ✅ NEW
 
-  // 🧠 On app load, try loading user from localStorage
+  // ✅ Restore user + token on page reload
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    if (storedUser) {
+    const storedToken = localStorage.getItem('token');
+
+    if (storedUser && storedToken) {
       setUser(JSON.parse(storedUser));
+      setToken(storedToken);
     }
+
+    setLoading(false); // ✅ tell app: "check is done"
   }, []);
 
-  // 🔐 Save token and user info after successful login
+  // ✅ Save user + token on login
   const login = ({ token, user }) => {
     setUser(user);
+    setToken(token);
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('token', token);
   };
 
-  // 🚪 Clear auth data from state and storage
+  // ✅ Clear user + token on logout
   const logout = () => {
     setUser(null);
+    setToken(null);
     localStorage.removeItem('user');
     localStorage.removeItem('token');
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,             // 👤 Current user object
-      login,            // 🔐 Login function
-      logout,           // 🚪 Logout function
-      token: localStorage.getItem('token') // 🔑 JWT token from storage
-    }}>
+    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// ✅ Custom hook for easy access to AuthContext
 export const useAuth = () => useContext(AuthContext);

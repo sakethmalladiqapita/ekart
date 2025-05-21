@@ -13,6 +13,8 @@ import { AuthProvider } from './contexts/AuthContext';
 import CreateUserPage from './pages/CreateUserPage';
 import Footer from './components/Footer';
 import './App.css'; // make sure this exists
+import './styles/AppStyles.css';
+
 
 function App() {
   return (

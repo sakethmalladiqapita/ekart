@@ -1878,7 +1878,7 @@
     "ProcessorCount": 8,
     "Is64BitProcess": true,
     "CLRVersion": "8.0.16",
-    "WorkingSet": 97329152,
+    "WorkingSet": 96948224,
     "SystemPageSize": 4096,
     "HostName": "Qap-7V0YTL3",
     "UserName": "sakethm",

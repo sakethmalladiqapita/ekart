@@ -1,0 +1,201 @@
+/* === Global Layout === */
+.page-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 24px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9fafb;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  
+  .page-header {
+    text-align: center;
+    margin-bottom: 32px;
+    color: #111827;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1.8rem;
+    user-select: none;
+  }
+  
+  /* === Grid & Cards === */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+  
+  .card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .card:hover {
+    transform: translateY(-6px);
+  }
+  
+  .card img {
+    height: 180px;
+    object-fit: cover;
+    width: 100%;
+  }
+  
+  .card-content {
+    padding: 16px;
+  }
+  
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 8px;
+  }
+  
+  .card-price {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #10b981;
+    margin-bottom: 16px;
+  }
+  
+  .card-meta {
+    font-size: 0.95rem;
+    color: #6b7280;
+    margin-bottom: 4px;
+  }
+  
+  /* === Buttons === */
+  .btn {
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .btn-primary {
+    background-color: #2563eb;
+    color: white;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+  }
+  
+  .btn-success {
+    background-color: #10b981;
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  }
+  
+  .btn-danger {
+    background-color: #ef4444;
+    color: white;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  }
+  
+  .qty-btn {
+    padding: 6px 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f3f4f6;
+    cursor: pointer;
+  }
+  
+  /* === Form Inputs === */
+  .input-field {
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background-color: white;
+    outline: none;
+  }
+  
+  .form-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  /* === Toast Component === */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    z-index: 9999;
+    font-size: 1rem;
+    animation: fadeInOut 3s ease-in-out forwards;
+  }
+  
+  .toast-info {
+    background-color: #3b82f6;
+  }
+  
+  .toast-success {
+    background-color: #10b981;
+  }
+  
+  .toast-error {
+    background-color: #ef4444;
+  }
+  
+  .toast-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .toast-icon {
+    font-size: 1.2rem;
+  }
+  
+  .toast-close {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    margin-left: 16px;
+    cursor: pointer;
+  }
+  
+  @keyframes fadeInOut {
+    0% { opacity: 0; bottom: 0px; }
+    10% { opacity: 1; bottom: 20px; }
+    90% { opacity: 1; bottom: 20px; }
+    100% { opacity: 0; bottom: 0px; }
+  }
+  
+  /* === Pagination === */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+    gap: 16px;
+  }
+  
+  .pagination-button {
+    padding: 8px 16px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #ffffff;
+    cursor: pointer;
+  }
+  

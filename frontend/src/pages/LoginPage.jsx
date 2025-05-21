@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Paper, Alert } from '@mui/material';
+import { Box, TextField, Button, Typography, Paper } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
+import axios from '../api/axios'; // ✅ centralized instance
 import { useNavigate } from 'react-router-dom';
+import Toast from '../components/Toast'; // ✅ toast
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fieldErrors, setFieldErrors] = useState({ email: '', password: '' });
-  const [generalError, setGeneralError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState({ visible: false, message: '', type: 'error' });
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -17,7 +19,6 @@ const LoginPage = () => {
     let isValid = true;
     const errors = { email: '', password: '' };
 
-    // Basic email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email.trim()) {
       errors.email = 'Email is required.';
@@ -38,17 +39,24 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setGeneralError('');
 
     if (!validate()) return;
 
+    setLoading(true);
     try {
       const res = await axios.post('/api/auth/login', { email, password });
       const { token, user } = res.data;
       login({ token, user });
       navigate('/');
     } catch (err) {
-      setGeneralError('Invalid email or password.');
+      console.error(err);
+      setToast({
+        visible: true,
+        message: 'Invalid email or password.',
+        type: 'error'
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,8 +64,6 @@ const LoginPage = () => {
     <Box display="flex" justifyContent="center" mt={5}>
       <Paper sx={{ p: 4, width: 400 }}>
         <Typography variant="h5" gutterBottom>Login</Typography>
-
-        {generalError && <Alert severity="error" sx={{ mb: 2 }}>{generalError}</Alert>}
 
         <form onSubmit={handleSubmit}>
           <TextField
@@ -85,11 +91,20 @@ const LoginPage = () => {
             color="primary"
             fullWidth
             sx={{ mt: 2 }}
+            disabled={loading}
           >
-            Login
+            {loading ? 'Logging in...' : 'Login'}
           </Button>
         </form>
       </Paper>
+
+      {toast.visible && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ ...toast, visible: false })}
+        />
+      )}
     </Box>
   );
 };

@@ -1,18 +1,19 @@
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
 import { useAuth } from '../contexts/AuthContext';
+import Toast from '../components/Toast';
 
 const CheckoutPage = () => {
-  const location = useLocation(); // Used to receive navigation state (order or buy-now info)
+  const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth(); // Get logged-in user
+  const { user } = useAuth();
 
-  const order = location.state?.order; // Order passed from cart or buy-now logic
+  const order = location.state?.order;
 
   const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState({ visible: false, message: '', type: 'info' });
 
-  // Local form state for mock card input
   const [details, setDetails] = useState({
     cardNumber: '',
     name: '',
@@ -20,79 +21,54 @@ const CheckoutPage = () => {
     cvv: ''
   });
 
-  // 🔁 Handle changes to form input
   const handleChange = (e) => {
     setDetails({ ...details, [e.target.name]: e.target.value });
   };
 
-  // ✅ Main payment action
+  const showToast = (msg, type = 'error') => {
+    setToast({ visible: true, message: msg, type });
+  };
+
   const handlePayment = async () => {
     const { cardNumber, name, expiry, cvv } = details;
 
-    // 🔒 Basic client-side validations
     if (!cardNumber || !name || !expiry || !cvv) {
-      alert('Please fill in all payment details.');
-      return;
+      return showToast('Please fill in all payment details.');
     }
-
-    if (!/^\d{16}$/.test(cardNumber)) {
-      alert('Card number must be exactly 16 digits.');
-      return;
-    }
-
-    if (!/^\d{3,4}$/.test(cvv)) {
-      alert('CVV must be 3 or 4 digits.');
-      return;
-    }
-
-    if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) {
-      alert('Expiry must be in MM/YY format.');
-      return;
-    }
+    if (!/^\d{16}$/.test(cardNumber)) return showToast('Card number must be 16 digits.');
+    if (!/^\d{3,4}$/.test(cvv)) return showToast('CVV must be 3 or 4 digits.');
+    if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) return showToast('Expiry must be in MM/YY format.');
 
     setLoading(true);
 
     try {
       let finalOrder = order;
 
-      // ✅ If coming from Buy Now and no order object, create order on the fly
       if (!finalOrder) {
         if (location.state?.type === 'buynow') {
           const res = await axios.post('/api/orders/buy-now', {
             productId: location.state.productId,
             quantity: location.state.quantity
           });
-          
           finalOrder = res.data;
         } else {
-          // 🛒 Fallback: assume user came from cart, so trigger cart checkout
           const res = await axios.post('/api/cart/checkout');
-
           finalOrder = res.data;
         }
       }
 
-      if (!finalOrder) {
-        throw new Error('Order not available');
-      }
+      if (!finalOrder) throw new Error('Order not available');
 
-      console.log("PAYMENT REQUEST BODY >>>", {
-        OrderId: finalOrder.id,
-        Amount: finalOrder.totalAmount
-      });
-
-      // 💳 Trigger backend payment creation
       await axios.post('/api/payment/create', {
         OrderId: finalOrder.id,
         Amount: finalOrder.totalAmount
       });
 
-      // ✅ Redirect to confirmation page with orderId
       navigate('/confirmation', { state: { orderId: finalOrder.id } });
 
     } catch (err) {
       console.error(err);
-      alert('Payment processing failed.');
+      showToast('Payment processing failed.');
     } finally {
       setLoading(false);
     }
@@ -101,52 +77,26 @@ const CheckoutPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  
 
-  // 🔐 Block access if not logged in
-  if (!user) {
-    return <p style={{ textAlign: 'center', marginTop: '50px' }}>Please log in first.</p>;
-  }
+  if (!user) return <p style={{ textAlign: 'center', marginTop: '50px' }}>Please log in first.</p>;
 
-  // 🚫 Block access if page loaded without cart/buy-now data
-  if (
-    !order &&
-    !(location.state?.type === 'buynow' && location.state?.productId && location.state?.quantity)
-  ) {
+  if (!order &&
+      !(location.state?.type === 'buynow' && location.state?.productId && location.state?.quantity)) {
     return <p style={{ textAlign: 'center', marginTop: '50px' }}>Invalid access. Please return to the cart.</p>;
   }
 
-  // 💳 UI for card payment
   return (
-    <div style={{
-      maxWidth: '500px',
-      margin: 'auto',
-      padding: '32px 20px',
-      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-      backgroundColor: '#f9fafb',
-      minHeight: '100vh'
-    }}>
-      <header style={{
-        textAlign: 'center',
-        marginBottom: '32px',
-        color: '#111827',
-        letterSpacing: '1px',
-        textTransform: 'uppercase',
-        fontWeight: '700',
-        fontSize: '1.6rem',
-        userSelect: 'none'
-      }}>
-        Checkout
-      </header>
+    <div className="page-container" style={{ maxWidth: '500px' }}>
+      <header className="page-header">Checkout</header>
 
-      <form style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <form className="form-layout">
         <input
           type="text"
           name="cardNumber"
           placeholder="Card Number"
           value={details.cardNumber}
           onChange={handleChange}
-          style={inputStyle}
+          className="input-field"
         />
         <input
           type="text"
@@ -154,7 +104,7 @@ const CheckoutPage = () => {
           placeholder="Name on Card"
           value={details.name}
           onChange={handleChange}
-          style={inputStyle}
+          className="input-field"
         />
         <input
           type="text"
@@ -162,7 +112,7 @@ const CheckoutPage = () => {
           placeholder="Expiry Date (MM/YY)"
           value={details.expiry}
           onChange={handleChange}
-          style={inputStyle}
+          className="input-field"
         />
         <input
           type="password"
@@ -170,56 +120,28 @@ const CheckoutPage = () => {
           placeholder="CVV"
           value={details.cvv}
           onChange={handleChange}
-          style={inputStyle}
+          className="input-field"
         />
 
         <button
           type="button"
           onClick={handlePayment}
-          style={{
-            ...buttonStyle,
-            filter:
-              loading || !details.cardNumber || !details.name || !details.expiry || !details.cvv
-                ? 'opacity: 0.5'
-                : 'none',
-            cursor:
-              loading || !details.cardNumber || !details.name || !details.expiry || !details.cvv
-                ? 'not-allowed'
-                : 'pointer',
-          }}
-          disabled={
-            loading || !details.cardNumber || !details.name || !details.expiry || !details.cvv
-          }
+          className="btn btn-success"
+          disabled={loading}
         >
           {loading ? 'Processing...' : 'Pay Now'}
         </button>
       </form>
+
+      {toast.visible && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ ...toast, visible: false })}
+        />
+      )}
     </div>
   );
-};
-
-// 🧩 Reusable input styles
-const inputStyle = {
-  padding: '12px',
-  fontSize: '1rem',
-  border: '1px solid #d1d5db',
-  borderRadius: '10px',
-  outline: 'none',
-  transition: 'border-color 0.3s ease-in-out',
-  backgroundColor: 'white'
-};
-
-// 🟢 Payment button style
-const buttonStyle = {
-  backgroundColor: '#10b981',
-  color: 'white',
-  border: 'none',
-  borderRadius: '12px',
-  padding: '14px 0',
-  fontSize: '1.1rem',
-  fontWeight: '600',
-  cursor: 'pointer',
-  boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)'
 };
 
 export default CheckoutPage;

@@ -1,27 +1,30 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import axios from '../api/axios';
+import Toast from '../components/Toast';
 
 const CreateUserPage = () => {
-  // 🧾 Form state for user input, including nested address
   const [form, setForm] = useState({
     email: '',
     passwordHash: '',
     address: {
       street: '',
       city: '',
-      zip: ''
+      zip: '',
+      state: '',
+      country: ''
     }
   });
 
-  // 📣 Feedback message (success or error)
-  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState({ visible: false, message: '', type: 'info' });
+  const navigate = useNavigate();
 
-  // 🖊️ Handles changes for both flat and nested address fields
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // If it's part of the address object
-    if (['street', 'city', 'zip'].includes(name)) {
+    if (['street', 'city', 'zip', 'state', 'country'].includes(name)) {
       setForm(prev => ({
         ...prev,
         address: {
@@ -34,45 +37,87 @@ const CreateUserPage = () => {
     }
   };
 
+  const validate = () => {
+    const { email, passwordHash, address } = form;
+    const errors = [];
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const zipRegex = /^\d{6}$/;
+
+    if (!email.trim() || !emailRegex.test(email)) {
+      errors.push('Valid email is required.');
+    }
+
+    if (!passwordHash.trim() || passwordHash.length < 6) {
+      errors.push('Password must be at least 6 characters.');
+    }
+
+    if (!address.street.trim()) errors.push('Street is required.');
+    if (!address.city.trim()) errors.push('City is required.');
+    if (!address.state.trim()) errors.push('State is required.');
+    if (!address.country.trim()) errors.push('Country is required.');
+    if (!zipRegex.test(address.zip)) {
+      errors.push('ZIP must be a 6-digit number.');
+    }
+
+    if (errors.length > 0) {
+      setToast({ visible: true, message: errors.join(' '), type: 'error' });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage(''); // Clear previous messages
-  
+
+    if (!validate()) return;
+
+    setLoading(true);
+    setToast({ visible: false, message: '', type: 'info' });
+
     try {
-      await axios.post('http://localhost:5105/api/users/create', form);
-      setMessage('User created successfully!');
+      await axios.post('/api/users/create', form);
+
+      setToast({ visible: true, message: 'User created successfully! Redirecting to login...', type: 'success' });
+      
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
+      
     } catch (err) {
       console.error(err);
-  
+
       const fallback = 'Failed to create user';
-  
+      let message = fallback;
+
       if (err.response?.data?.errors) {
         const allErrors = Object.values(err.response.data.errors).flat();
-        setMessage(allErrors.join(' ') || fallback);
+        message = allErrors.join(' ') || fallback;
       } else if (err.response?.data?.detail) {
-        setMessage(err.response.data.detail); // ✅ Handle ProblemDetails.detail
+        message = err.response.data.detail;
       } else if (typeof err.response?.data === 'string') {
-        setMessage(err.response.data);
-      } else {
-        setMessage(fallback);
+        message = err.response.data;
       }
+
+      setToast({ visible: true, message, type: 'error' });
+    } finally {
+      setLoading(false);
     }
   };
-  
 
   return (
-    <div style={{ maxWidth: '400px', margin: 'auto', padding: '32px' }}>
-      <h2 style={{ textAlign: 'center' }}>Create New Account</h2>
+    <div className="page-container" style={{ maxWidth: '400px' }}>
+      <h2 className="page-header">Create New Account</h2>
 
-      {/* 📋 Registration Form */}
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <form onSubmit={handleSubmit} className="form-layout">
         <input
           type="email"
           name="email"
           placeholder="Email"
           value={form.email}
           onChange={handleChange}
-          required
+          className="input-field"
         />
         <input
           type="password"
@@ -80,7 +125,7 @@ const CreateUserPage = () => {
           placeholder="Password"
           value={form.passwordHash}
           onChange={handleChange}
-          required
+          className="input-field"
         />
         <input
           type="text"
@@ -88,6 +133,7 @@ const CreateUserPage = () => {
           placeholder="Street"
           value={form.address.street}
           onChange={handleChange}
+          className="input-field"
         />
         <input
           type="text"
@@ -95,6 +141,7 @@ const CreateUserPage = () => {
           placeholder="City"
           value={form.address.city}
           onChange={handleChange}
+          className="input-field"
         />
         <input
           type="text"
@@ -102,27 +149,36 @@ const CreateUserPage = () => {
           placeholder="ZIP"
           value={form.address.zip}
           onChange={handleChange}
+          className="input-field"
+        />
+        <input
+          type="text"
+          name="state"
+          placeholder="State"
+          value={form.address.state}
+          onChange={handleChange}
+          className="input-field"
+        />
+        <input
+          type="text"
+          name="country"
+          placeholder="Country"
+          value={form.address.country}
+          onChange={handleChange}
+          className="input-field"
         />
 
-        <button
-          type="submit"
-          style={{
-            padding: '10px',
-            backgroundColor: '#2563eb',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px'
-          }}
-        >
-          Create User
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? 'Creating...' : 'Create User'}
         </button>
       </form>
 
-      {/* 📣 Feedback message display */}
-      {message && (
-        <p style={{ marginTop: '20px', textAlign: 'center', color: '#4b5563' }}>
-          {message}
-        </p>
+      {toast.visible && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ ...toast, visible: false })}
+        />
       )}
     </div>
   );
